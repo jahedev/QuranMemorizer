@@ -1,18 +1,23 @@
 import { useState } from "react";
-import ControlBar from "./ControlBar";
+import ControlBar from "./components/ControlBar";
 import { UpCircleOutlined } from "@ant-design/icons";
-import Page from "./Page";
+import Page from "./components/Page";
+import useLocalStorage from "./hooks/useLocalStorage";
+import { useSwipeable } from "react-swipeable";
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [extendHeight, setExtendHeight] = useState(true);
-  const [isSinglePage, setIsSinglePage] = useState(true);
+  const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
+  const [extendHeight, setExtendHeight] = useLocalStorage(
+    "extendHeight",
+    false
+  );
+  const [isSinglePage, setIsSinglePage] = useLocalStorage("isSinglePage", true);
   const [rightPage, setRightPage] = useState(1);
-  const leftPage = rightPage + 1 <= 604 ? rightPage + 1 : null;
+  const leftPage = rightPage + 1 <= 604 ? rightPage + 1 : 604;
 
   const nextPage = () => {
     if (isSinglePage) {
-      setRightPage((prev) => (prev < 603 ? prev + 1 : 603));
+      setRightPage((prev) => (prev < 604 ? prev + 1 : 604));
     } else {
       setRightPage((prev) => (prev + 2 <= 603 ? prev + 2 : 603));
     }
@@ -28,15 +33,29 @@ function App() {
   };
 
   const togglePageMode = () => {
+    if (isSinglePage && rightPage >= 604) setRightPage(603);
     setIsSinglePage(!isSinglePage);
   };
+
+  const toggleExtendHeight = () => {
+    setExtendHeight(!extendHeight);
+  };
+
+  // Swipe handlers
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => prevPage(),
+    onSwipedRight: () => nextPage(),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true, // To enable swipe handling with mouse events for testing
+  });
 
   return (
     <>
       {/* full width: quran-memorizer bg-slate-300 dark:bg-slate-700 flex flex-col justify-center items-center overflow-y-auto w-screen */}
       <div
+        {...swipeHandlers}
         className={
-          "quran-memorizer bg-slate-300 dark:bg-slate-700 flex flex-col justify-center items-center w-screen object-contain" +
+          "quran-memorizer bg-slate-300 dark:bg-slate-700 flex flex-col justify-center items-center w-screen object-contain " +
           (extendHeight ? "overflow-y-auto w-screen" : "min-h-screen h-screen")
         }
       >
@@ -45,11 +64,18 @@ function App() {
           id='image-container'
           className='image-container flex justify-center items-center w-full h-full box-border'
         >
-          {!isSinglePage && <Page side='left' pageNumber={2} />}
+          {!isSinglePage && (
+            <Page
+              rightSide={false}
+              pageNumber={leftPage}
+              halfWidth={isSinglePage}
+              extendHeight={extendHeight}
+            />
+          )}
           <Page
-            side='right'
+            rightSide={true}
             halfWidth={isSinglePage}
-            pageNumber={1}
+            pageNumber={rightPage}
             extendHeight={extendHeight}
           />
         </div>
@@ -62,7 +88,19 @@ function App() {
             <UpCircleOutlined />
           </button>
         )}
-        <ControlBar isOpen={isOpen} setIsOpen={setIsOpen} />
+        <ControlBar
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          extendHeight={extendHeight}
+          toggleExtendHeight={toggleExtendHeight}
+          isSinglePage={isSinglePage}
+          togglePageMode={togglePageMode}
+          nextPage={nextPage}
+          prevPage={prevPage}
+          rightPage={rightPage}
+          leftPage={leftPage}
+          setRightPage={setRightPage}
+        />
         {/* <div className="controls">
           <button id="next-page" className="nav-button">&#x2B05; Next</button>
           <button id="prev-page" className="nav-button">Previous &#x27A1;</button>

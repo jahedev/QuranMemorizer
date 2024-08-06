@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .max-w-proportional {
+    max-width: calc(100vh * 0.8); /* Adjust the multiplier as needed */
+  }
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -30,6 +36,7 @@ a:hover {
   /* max-width: 1280px; */
   margin: 0;
   padding: 0;
+  overflow-y: hidden;
 }
 
 div, img, button, input, select {
