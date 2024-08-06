@@ -35,6 +35,13 @@ function ControlBar({
     } else setRightPage(page);
   };
 
+  const hideKeyboard = (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        event.target.blur();
+    }
+};
+
   useEffect(() => {
     const handleFocus = () => {
       inputRef.current.select();
@@ -58,7 +65,7 @@ function ControlBar({
         <select
           id='surah-select'
           name='surah-select'
-          className='bg-white dark:bg-gray-800 border dark:text-gray-100   border-gray-300 text-gray-700 py-1 px-3 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm md:text-base lg:text-lg'
+          className='bg-white dark:bg-gray-800 border dark:text-gray-100   border-gray-300 text-gray-700 py-1 px-3 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm md:text-base lg:text-lg'
         >
           <option data-page-number='1' value='surah-1'>
             Al-Fatihah (The Opening)
@@ -69,7 +76,9 @@ function ControlBar({
           type='number'
           autoComplete='off'
           placeholder='1-604'
-          className='w-20 bg-white dark:bg-gray-800 border dark:text-gray-100   border-gray-300 text-gray-700 py-1 px-3 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm md:text-base lg:text-lg'
+          onKeyDown={hideKeyboard}
+          step={isSinglePage ? '1' : '2'}
+          className='w-20 bg-white dark:bg-gray-800 border dark:text-gray-100   border-gray-300 text-gray-700 py-1 px-3 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm md:text-base lg:text-lg'
           value={rightPage}
           onChange={handleChangePageNumber}
           ref={inputRef}

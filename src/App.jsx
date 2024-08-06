@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ControlBar from "./components/ControlBar";
-import { UpCircleOutlined } from "@ant-design/icons";
+import { ControlFilled } from "@ant-design/icons";
 import Page from "./components/Page";
 import useLocalStorage from "./hooks/useLocalStorage";
 import { useSwipeable } from "react-swipeable";
@@ -33,7 +33,8 @@ function App() {
   };
 
   const togglePageMode = () => {
-    if (isSinglePage && rightPage >= 604) setRightPage(603);
+    if (isSinglePage && rightPage >= 604) setRightPage(() => 603);
+    if (isSinglePage && rightPage % 2 == 0) setRightPage(prev => prev - 1 >= 1 ? prev - 1 : 1)
     setIsSinglePage(!isSinglePage);
   };
 
@@ -82,10 +83,10 @@ function App() {
         {/* Open Control Bar using Button  */}
         {!isOpen && (
           <button
-            className='bg-blue-500 text-white p-3 pl-4 pr-4 fixed bottom-4 right-4 shadow-lg'
+            className='bg-sky-600 text-2xl text-white px-2 py-1 fixed bottom-4 right-4 shadow-lg'
             onClick={() => setIsOpen(true)}
           >
-            <UpCircleOutlined />
+            <ControlFilled />
           </button>
         )}
         <ControlBar
