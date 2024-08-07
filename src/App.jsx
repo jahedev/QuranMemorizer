@@ -1,9 +1,11 @@
-import { useState } from "react";
-import ControlBar from "./components/ControlBar";
 import { ControlFilled } from "@ant-design/icons";
+import { useState } from "react";
+import { useSwipeable } from "react-swipeable";
+import Button from "./components/Button";
+import ControlBar from "./components/ControlBar";
 import Page from "./components/Page";
 import useLocalStorage from "./hooks/useLocalStorage";
-import { useSwipeable } from "react-swipeable";
+import {getPageBySurah, getSurahByPage} from "./utils/quranUtils"
 
 function App() {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
@@ -14,6 +16,7 @@ function App() {
   const [isSinglePage, setIsSinglePage] = useLocalStorage("isSinglePage", true);
   const [rightPage, setRightPage] = useState(1);
   const leftPage = rightPage + 1 <= 604 ? rightPage + 1 : 604;
+  const surahNumber = getSurahByPage(rightPage)
 
   const nextPage = () => {
     if (isSinglePage) {
@@ -34,7 +37,8 @@ function App() {
 
   const togglePageMode = () => {
     if (isSinglePage && rightPage >= 604) setRightPage(() => 603);
-    if (isSinglePage && rightPage % 2 == 0) setRightPage(prev => prev - 1 >= 1 ? prev - 1 : 1)
+    if (isSinglePage && rightPage % 2 == 0)
+      setRightPage((prev) => (prev - 1 >= 1 ? prev - 1 : 1));
     setIsSinglePage(!isSinglePage);
   };
 
@@ -52,7 +56,6 @@ function App() {
 
   return (
     <>
-      {/* full width: quran-memorizer bg-slate-300 dark:bg-slate-700 flex flex-col justify-center items-center overflow-y-auto w-screen */}
       <div
         {...swipeHandlers}
         className={
@@ -60,7 +63,6 @@ function App() {
           (extendHeight ? "overflow-y-auto w-screen" : "min-h-screen h-screen")
         }
       >
-        {/* image-container when full width: add max-w-7xl */}
         <div
           id='image-container'
           className='image-container flex justify-center items-center w-full h-full box-border'
@@ -82,12 +84,11 @@ function App() {
         </div>
         {/* Open Control Bar using Button  */}
         {!isOpen && (
-          <button
-            className='bg-sky-600 text-2xl text-white px-2 py-1 fixed bottom-4 right-4 shadow-lg'
+          <Button
+            text={<ControlFilled />}
             onClick={() => setIsOpen(true)}
-          >
-            <ControlFilled />
-          </button>
+            bgColor='bg-sky-600 text-2xl text-white px-2 py-1 fixed bottom-4 right-4 shadow-lg'
+          />
         )}
         <ControlBar
           isOpen={isOpen}
@@ -101,17 +102,8 @@ function App() {
           rightPage={rightPage}
           leftPage={leftPage}
           setRightPage={setRightPage}
+          surahNumber={surahNumber}
         />
-        {/* <div className="controls">
-          <button id="next-page" className="nav-button">&#x2B05; Next</button>
-          <button id="prev-page" className="nav-button">Previous &#x27A1;</button>
-          <button id="single-page" className="nav-button">&#x1F4C4; Single</button>
-          <button id="full-screen" className="nav-button">&#x26F6; Fullscreen</button>
-          <select id="surah-select" name="surah-select">
-            <option data-page-number="1" value="surah-1">Al-Fatihah (The Opening)</option>
-          </select>
-          <input id="page-number" type="number" autoComplete="off" placeholder="1-604" value="1"></input>
-        </div> */}
       </div>
     </>
   );

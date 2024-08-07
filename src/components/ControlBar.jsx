@@ -10,6 +10,8 @@ import {
   CopyOutlined,
   CopyFilled,
 } from "@ant-design/icons";
+import SurahSelector from "./SurahSelector";
+import { getPageBySurah } from "../utils/quranUtils";
 
 function ControlBar({
   isOpen,
@@ -23,16 +25,23 @@ function ControlBar({
   rightPage,
   leftPage,
   setRightPage,
+  surahNumber
 }) {
   const inputRef = useRef(null);
 
-  const handleChangePageNumber = (event) => {
-    let page = parseInt(event.target.value, 10);
-    if (isNaN(page) || page < 1) setRightPage(1);
-    else if (page > 603) {
+  const changePage = (pageNumber) => {
+    console.log(pageNumber)
+    if (isNaN(pageNumber) || pageNumber < 1) setRightPage(1);
+    else if (pageNumber > 603) {
       if (isSinglePage) setRightPage(604);
       else setRightPage(603);
-    } else setRightPage(page);
+    } else if (!isSinglePage && pageNumber % 2 == 0) setRightPage(pageNumber-1)
+    else setRightPage(pageNumber);
+  }
+
+  const handleChangePageNumber = (event) => {
+    let pageNumber = parseInt(event.target.value, 10);
+    changePage(pageNumber)
   };
 
   const hideKeyboard = (event) => {
@@ -55,6 +64,13 @@ function ControlBar({
     };
   }, []);
 
+  const surahChanged = (surahNumber) => {
+    surahNumber = Number(surahNumber)
+    if (!surahNumber || isNaN(surahNumber) || surahNumber < 1) surahNumber = 1
+    else if (surahNumber > 114) surahNumber = 114
+    changePage(getPageBySurah(surahNumber))
+  }
+
   return (
     <div
       className={`fixed bottom-0 left-0 right-0 flex flex-col gap-5 justify-center bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white p-4 transition-transform duration-300 ${
@@ -62,15 +78,7 @@ function ControlBar({
       }`}
     >
       <div className='flex justify-center items-center gap-4'>
-        <select
-          id='surah-select'
-          name='surah-select'
-          className='bg-white dark:bg-gray-800 border dark:text-gray-100   border-gray-300 text-gray-700 py-1 px-3 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-sm md:text-base lg:text-lg'
-        >
-          <option data-page-number='1' value='surah-1'>
-            Al-Fatihah (The Opening)
-          </option>
-        </select>
+        <SurahSelector surahNumber={surahNumber} surahChanged={surahChanged} />
         <input
           id='page-number'
           type='number'
@@ -96,7 +104,7 @@ function ControlBar({
       </div>
       <div className='flex justify-center items-center px-3 pb-3'>
         <Button
-          bgColor='bg-red-500 w-7/12'
+          bgColor='bg-red-500 w-7/12 sm:w-5/12 lg:w-1/4 hover:border-gray-200'
           text='Close Controls'
           onClick={() => setIsOpen(false)}
         />
@@ -125,12 +133,13 @@ ControlBar.propTypes = {
   isSinglePage: PropTypes.bool.isRequired,
   togglePageMode: PropTypes.func.isRequired,
   extendHeight: PropTypes.bool.isRequired,
-  setExtendHeight: PropTypes.func.isRequired,
+  toggleExtendHeight: PropTypes.func.isRequired,
   nextPage: PropTypes.func.isRequired,
   prevPage: PropTypes.func.isRequired,
   rightPage: PropTypes.number.isRequired,
   leftPage: PropTypes.number.isRequired,
   setRightPage: PropTypes.func.isRequired,
+  surahNumber: PropTypes.number.isRequired
 };
 
 export default ControlBar;

@@ -4,10 +4,10 @@ import { useContext } from "react";
 import PropTypes from 'prop-types';
 
 function Page({
-  rightSide,
-  pageNumber,
-  extendHeight,
-  halfWidth,
+  rightSide = false,
+  pageNumber = 1,
+  extendHeight = false,
+  halfWidth = true,
 }) {
 
 
@@ -35,13 +35,6 @@ function Page({
     </>
   );
 }
-
-Page.defaultProps = {
-  rightSide: false,
-  pageNumber: 1,
-  extendHeight: false,
-  halfWidth: true
-};
 
 Page.propTypes = {
   rightSide: PropTypes.bool,
