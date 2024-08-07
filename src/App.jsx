@@ -1,11 +1,11 @@
 import { ControlFilled } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import Button from "./components/Button";
 import ControlBar from "./components/ControlBar";
 import Page from "./components/Page";
 import useLocalStorage from "./hooks/useLocalStorage";
-import {getPageBySurah, getSurahByPage} from "./utils/quranUtils"
+import {getSurahByPage} from "./utils/quranUtils"
 
 function App() {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
@@ -15,9 +15,26 @@ function App() {
     false
   );
   const [isSinglePage, setIsSinglePage] = useLocalStorage("isSinglePage", true);
-  const [rightPage, setRightPage] = useState(1);
+  const [rightPage, setRightPage] = useLocalStorage("rightPage", 1);
+  // const [rightPage, setRightPage] = useState(1);
   const leftPage = rightPage + 1 <= 604 ? rightPage + 1 : 604;
-  const surahNumber = getSurahByPage(rightPage)
+  const surahNumber = getSurahByPage(rightPage);
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowRight' || event.key === 'd') {
+      prevPage();
+    } else if (event.key === 'ArrowLeft' || event.key === 'a') {
+      nextPage();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const nextPage = () => {
     if (isSinglePage) {

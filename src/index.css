@@ -8,6 +8,10 @@
   }
 }
 
+.page-image {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
