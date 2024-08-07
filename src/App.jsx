@@ -9,6 +9,7 @@ import {getPageBySurah, getSurahByPage} from "./utils/quranUtils"
 
 function App() {
   const [isOpen, setIsOpen] = useLocalStorage("isOpen", false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [extendHeight, setExtendHeight] = useLocalStorage(
     "extendHeight",
     false

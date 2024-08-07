@@ -1,5 +1,4 @@
 // Button.js
-import React from 'react';
 import PropTypes from 'prop-types';
 
 const Button = ({ text, onClick, bgColor }) => {

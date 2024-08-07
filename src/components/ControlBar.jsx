@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "./Button";
 import PropTypes from "prop-types";
 import { useRef, useEffect } from "react";
@@ -64,13 +63,6 @@ function ControlBar({
     };
   }, []);
 
-  const surahChanged = (surahNumber) => {
-    surahNumber = Number(surahNumber)
-    if (!surahNumber || isNaN(surahNumber) || surahNumber < 1) surahNumber = 1
-    else if (surahNumber > 114) surahNumber = 114
-    changePage(getPageBySurah(surahNumber))
-  }
-
   return (
     <div
       className={`fixed bottom-0 left-0 right-0 flex flex-col gap-5 justify-center bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-white p-4 transition-transform duration-300 ${
@@ -78,7 +70,7 @@ function ControlBar({
       }`}
     >
       <div className='flex justify-center items-center gap-4'>
-        <SurahSelector surahNumber={surahNumber} surahChanged={surahChanged} />
+        <SurahSelector pageNumber={rightPage} changePage={changePage} />
         <input
           id='page-number'
           type='number'

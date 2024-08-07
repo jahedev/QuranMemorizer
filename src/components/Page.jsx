@@ -1,4 +1,3 @@
-import React from "react";
 import { UserContext } from "../main";
 import { useContext } from "react";
 import PropTypes from 'prop-types';
