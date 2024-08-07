@@ -29,7 +29,6 @@ function ControlBar({
   const inputRef = useRef(null);
 
   const changePage = (pageNumber) => {
-    console.log(pageNumber)
     if (isNaN(pageNumber) || pageNumber < 1) setRightPage(1);
     else if (pageNumber > 603) {
       if (isSinglePage) setRightPage(604);

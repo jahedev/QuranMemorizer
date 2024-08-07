@@ -1,32 +1,21 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { surahNames, getSurahByPage, getPageBySurah } from "../utils/quranUtils";
 
-export default function SurahSelector({pageNumber, changePage}) {
+export default function SurahSelector({ pageNumber, changePage }) {
+  const [surahNumber, setSurahNumber] = useState(getSurahByPage(pageNumber));
 
-  const [surahNumber, setSurahNumber] = useState(getSurahByPage(pageNumber))
+  useEffect(() => {
+    setSurahNumber(getSurahByPage(pageNumber));
+  }, [pageNumber]);
 
   const handleSurahChange = (event) => {
     event.preventDefault();
     const newSurahNumber = Number(event.target.value);
     setSurahNumber(newSurahNumber);
-    console.log(`surah change: surah- ${newSurahNumber}, page-${getPageBySurah(Number(newSurahNumber))}`);
+    console.log(`surah change: surah- ${newSurahNumber}, page-${getPageBySurah(newSurahNumber)}`);
     changePage(getPageBySurah(newSurahNumber));
   };
-
-  // const handleSurahChange = (event) => {
-  //   const newSurahNumber = parseInt(event.target.value);
-  //   console.log('New Surah Number:', newSurahNumber);
-    
-  //   setSurahNumber(newSurahNumber);
-    
-  //   const newPageNumber = getPageBySurah(newSurahNumber);
-  //   console.log('New Page Number:', newPageNumber);
-    
-  //   changePage(newPageNumber);
-  // };
-  
 
   return (
     <>
@@ -49,5 +38,5 @@ export default function SurahSelector({pageNumber, changePage}) {
 
 SurahSelector.propTypes = {
   pageNumber: PropTypes.number.isRequired,
-  changePage: PropTypes.func.isRequired
+  changePage: PropTypes.func.isRequired,
 };
